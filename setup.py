@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name='cfanalytics',
+setup(name='xvelmap',
       version='0.0.1',
       license='MIT',
       author='Benoit Bovy',      
