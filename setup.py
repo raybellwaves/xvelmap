@@ -8,5 +8,5 @@ setup(name='xvelmap',
       description='A xarray extension to show velocity fields as interactive maps in jupyterlab',
       url='https://github.com/benbovy/xvelmap',
       packages=find_packages(),
-      install_requires=['json', 'xarray', 'ipython'],
+      install_requires=['xarray', 'ipython'],
       python_requires='>=3.6')
