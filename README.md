@@ -14,10 +14,10 @@ jupyterlab.
 - [ipython](https://github.com/ipython/ipython)
 - [jupyterlab_velocity](https://github.com/benbovy/jupyterlab_velocity)
 
-## Instalation
+## Installation
 
 ```
 $ conda install -c conda-forge xarray netcdf4 jupyterlab nodejs
 $ jupyter labextension install jupyterlab_velocity
-$ pip install git+https://github.com/raybellwaves/xvelmap.git
+$ pip install git+https://github.com/benbovy/xvelmap.git
 ```
