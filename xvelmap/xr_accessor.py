@@ -1,6 +1,9 @@
 import json
 
 import xarray as xr
+import xarray.ufuncs as xu
+import numpy as np
+
 from IPython.display import display
 
 
@@ -63,6 +66,11 @@ class VelocityMap(object):
                     .format(var_name, (lat_dim, lon_dim), var_dims)
                 )
 
+            # Check if dataset contains nans. If so replace with 0
+            if np.any(xu.isnan(self._ds[var_name]).values):
+                self._ds[var_name] = self._ds[var_name].fillna(0)
+            
+
         if units is None:
             u_var_units = self._ds[u_var].attrs.get('units')
             v_var_units = self._ds[v_var].attrs.get('units')
@@ -77,6 +85,15 @@ class VelocityMap(object):
 
         if units is None:
             units = ''
+            
+        # Prefers data to be in gaussian grid format (latitudes descending)
+        # This probably happens in '.flatten().tolist()'
+        if np.any(np.diff(self._ds[lat_dim].values) >= 0):
+            self._ds.coords[lat_dim] = self._dscoords[lat_dim].values[::-1]
+            # Assumes latitude is the first axis.
+            # Could probably add a check here
+            for var_name in (u_var, v_var):
+                self._ds[var_name].values = self._ds[var_name].values[::-1,:]
 
         # infer grid specifications (assume a rectangular grid)
         lat = self._ds[lat_dim].values
