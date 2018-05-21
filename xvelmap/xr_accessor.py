@@ -89,7 +89,7 @@ class VelocityMap(object):
         # Prefers data to be in gaussian grid format (latitudes descending)
         # This probably happens in '.flatten().tolist()'
         if np.any(np.diff(self._ds[lat_dim].values) >= 0):
-            self._ds.coords[lat_dim] = self._dscoords[lat_dim].values[::-1]
+            self._ds.coords[lat_dim] = self._ds.coords[lat_dim].values[::-1]
             # Assumes latitude is the first axis.
             # Could probably add a check here
             for var_name in (u_var, v_var):
