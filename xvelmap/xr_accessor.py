@@ -1,7 +1,6 @@
 import json
 
 import xarray as xr
-import xarray.ufuncs as xu
 import numpy as np
 
 from IPython.display import display
@@ -56,6 +55,7 @@ class VelocityMap(object):
             Display options for the interactive map.
 
         """
+        _ds = xr.Dataset()
         for var_name in (u_var, v_var):
             var_dims = self._ds[var_name].dims
 
@@ -66,9 +66,8 @@ class VelocityMap(object):
                     .format(var_name, (lat_dim, lon_dim), var_dims)
                 )
 
-            # Check if dataset contains nans. If so replace with 0
-            if np.any(xu.isnan(self._ds[var_name]).values):
-                self._ds[var_name] = self._ds[var_name].fillna(0)
+            # If dataset contains nans replace with 0
+            _ds[var_name] = self._ds[var_name].fillna(0)
             
 
         if units is None:
@@ -86,18 +85,12 @@ class VelocityMap(object):
         if units is None:
             units = ''
             
-        # Prefers data to be in gaussian grid format (latitudes descending)
-        # This probably happens in '.flatten().tolist()'
-        if np.any(np.diff(self._ds[lat_dim].values) >= 0):
-            self._ds.coords[lat_dim] = self._ds.coords[lat_dim].values[::-1]
-            # Assumes latitude is the first axis.
-            # Could probably add a check here
-            for var_name in (u_var, v_var):
-                self._ds[var_name].values = self._ds[var_name].values[::-1,:]
+        # Data should be in gaussian grid format (latitudes descending)
+        _ds = _ds.sel(lat_dim=slice(None, None, -1))
 
         # infer grid specifications (assume a rectangular grid)
-        lat = self._ds[lat_dim].values
-        lon = self._ds[lon_dim].values
+        lat = _ds[lat_dim].values
+        lon = _ds[lon_dim].values
 
         lon_left = float(lon.min())
         lon_right = float(lon.max())
@@ -132,7 +125,7 @@ class VelocityMap(object):
                     "refTime": "2017-02-01 23:00:00",
                     "lo1": lon_left
                     },
-                "data": self._ds[var_name].values.flatten().tolist()
+                "data": _ds[var_name].values.flatten().tolist()
             })
 
         # map center
