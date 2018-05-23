@@ -55,9 +55,9 @@ class VelocityMap(object):
             Display options for the interactive map.
 
         """
-        _ds = xr.Dataset()
+        ds = self._ds.copy()
         for var_name in (u_var, v_var):
-            var_dims = self._ds[var_name].dims
+            var_dims = ds[var_name].dims
 
             if set(var_dims) != set([lat_dim, lon_dim]):
                 raise ValueError(
@@ -67,13 +67,13 @@ class VelocityMap(object):
                 )
 
             # If dataset contains nans replace with 0
-            _ds[var_name] = self._ds[var_name].fillna(0)
+            ds[var_name] = ds[var_name].fillna(0)
 
-        _ds = _ds.rename({lat_dim: 'latitude', lon_dim: 'longitude'})    
+        ds = ds.rename({lat_dim: 'latitude', lon_dim: 'longitude'})    
 
         if units is None:
-            u_var_units = self._ds[u_var].attrs.get('units')
-            v_var_units = self._ds[v_var].attrs.get('units')
+            u_var_units = ds[u_var].attrs.get('units')
+            v_var_units = ds[v_var].attrs.get('units')
 
             if u_var_units != v_var_units:
                 raise ValueError(
@@ -87,12 +87,12 @@ class VelocityMap(object):
             units = ''
             
         # Data should be in gaussian grid format (latitudes descending)
-        if np.any(np.diff(_ds.latitude.values) >= 0):
-            _ds = _ds.sel(latitude=slice(None, None, -1))
+        if np.any(np.diff(ds[lat_dim].values) >= 0):
+            ds = ds.sel([lat_dim]=slice(None, None, -1))
 
         # infer grid specifications (assume a rectangular grid)
-        lat = _ds.latitude.values
-        lon = _ds.longitude.values
+        lat = ds[lat_dim].values
+        lon = ds[lon_dim].values
 
         lon_left = float(lon.min())
         lon_right = float(lon.max())
