@@ -87,7 +87,8 @@ class VelocityMap(object):
             units = ''
             
         # Data should be in gaussian grid format (latitudes descending)
-        _ds = _ds.sel(latitude=slice(None, None, -1))
+        if np.any(np.diff(_ds.latitude.values) >= 0):
+            _ds = _ds.sel(latitude=slice(None, None, -1))
 
         # infer grid specifications (assume a rectangular grid)
         lat = _ds[lat_dim].values
