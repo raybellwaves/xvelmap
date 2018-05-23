@@ -68,7 +68,8 @@ class VelocityMap(object):
 
             # If dataset contains nans replace with 0
             _ds[var_name] = self._ds[var_name].fillna(0)
-            
+
+        _ds = _ds.rename({lat_dim: 'latitude', lon_dim: 'longitude'})    
 
         if units is None:
             u_var_units = self._ds[u_var].attrs.get('units')
@@ -86,7 +87,7 @@ class VelocityMap(object):
             units = ''
             
         # Data should be in gaussian grid format (latitudes descending)
-        _ds = _ds.sel(lat_dim=slice(None, None, -1))
+        _ds = _ds.sel(latitude=slice(None, None, -1))
 
         # infer grid specifications (assume a rectangular grid)
         lat = _ds[lat_dim].values
