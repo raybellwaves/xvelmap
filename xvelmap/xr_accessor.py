@@ -91,8 +91,8 @@ class VelocityMap(object):
             _ds = _ds.sel(latitude=slice(None, None, -1))
 
         # infer grid specifications (assume a rectangular grid)
-        lat = _ds[lat_dim].values
-        lon = _ds[lon_dim].values
+        lat = _ds.latitude.values
+        lon = _ds.longitude.values
 
         lon_left = float(lon.min())
         lon_right = float(lon.max())
