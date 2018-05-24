@@ -127,7 +127,7 @@ class VelocityMap(object):
                     "refTime": "2017-02-01 23:00:00",
                     "lo1": lon_left
                     },
-                "data": _ds[var_name].values.flatten().tolist()
+                "data": ds[var_name].values.flatten().tolist()
             })
 
         # map center
