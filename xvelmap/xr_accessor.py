@@ -69,8 +69,6 @@ class VelocityMap(object):
             # If dataset contains nans replace with 0
             ds[var_name] = ds[var_name].fillna(0)
 
-        ds = ds.rename({lat_dim: 'latitude', lon_dim: 'longitude'})    
-
         if units is None:
             u_var_units = ds[u_var].attrs.get('units')
             v_var_units = ds[v_var].attrs.get('units')
